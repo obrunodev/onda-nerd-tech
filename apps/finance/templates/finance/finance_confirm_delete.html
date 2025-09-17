@@ -1,0 +1,16 @@
+{% extends "_base.html" %}
+
+{% block title %}Excluir transação{% endblock title %}
+
+{% block content %}
+
+    <h1>Excluir transação</h1>
+
+    <p>Tem certeza que deseja excluir essa transação {{ form.instance.title }}?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Excluir</button>
+    </form>
+
+{% endblock content %}

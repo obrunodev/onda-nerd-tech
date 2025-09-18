@@ -3,14 +3,30 @@
 {% block title %}Excluir transação{% endblock title %}
 
 {% block content %}
-
-    <h1>Excluir transação</h1>
-
-    <p>Tem certeza que deseja excluir essa transação {{ form.instance.title }}?</p>
-
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Excluir</button>
-    </form>
-
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h1 class="h5 text-center text-danger">Excluir Transação</h1>
+                </div>
+                <div class="card-body text-center">
+                    <p class="mb-4">
+                        Tem certeza que deseja excluir a transação<br>
+                        <strong>"{{ object.title }}"</strong>?
+                    </p>
+                    <form method="post" class="d-flex justify-content-center gap-3">
+                        {% csrf_token %}
+                        <a href="{% url 'finance:list' %}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger px-4">
+                            Excluir
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

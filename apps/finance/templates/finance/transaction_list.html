@@ -3,22 +3,121 @@
 {% block title %}Transações{% endblock title %}
 
 {% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h4">Lista de Transações</h1>
+                <a href="{% url 'finance:create' %}" class="btn btn-primary">
+                    + Nova transação
+                </a>
+            </div>
 
-    <h1>Lista de transações</h1>
+            <div class="mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Saldo Total:</span>
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                            R$ <!-- backend insere aqui a soma -->
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-    <a href="{% url "finance:create" %}">Nova transação</a>
+            <form method="get" class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por título">
+                </div>
+                <div class="col-md-4">
+                    <input type="date" name="date" class="form-control">
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        Filtrar
+                    </button>
+                </div>
+            </form>
 
-    <ul>
-        {% for transaction in transactions %}
-            <li>
-                {{ transaction }}
-                {% if transaction.due_date %}
-                    - Vence em: {{ transaction.due_date }}
-                {% endif %}
-                - <a href="{% url "finance:update" transaction.id %}">Editar</a>
-                - <a href="{% url "finance:delete" transaction.id %}">Excluir</a>
-            </li>
-        {% endfor %}
-    </ul>
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Pagamento</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                    <tr>
+                                        <td>{{ transaction.title }}</td>
+                                        <td>R$ {{ transaction.value }}</td>
+                                        <td>
+                                            {% if transaction.due_date %}
+                                                {{ transaction.due_date }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if transaction.payment_date %}
+                                                {{ transaction.payment_date }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if transaction.is_paid %}
+                                                <span class="badge bg-success">Pago</span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">Pendente</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="dropdown position-static">
+                                                <button class="btn btn-sm"
+                                                        type="button"
+                                                        id="dropdownMenu{{ transaction.id }}"
+                                                        data-bs-toggle="dropdown"
+                                                        data-bs-display="static"
+                                                        aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ transaction.id }}">
+                                                    <li>
+                                                        <a class="dropdown-item" href="{% url 'finance:update' transaction.id %}">
+                                                            <i class="bi bi-pencil-square me-2"></i> Editar
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item text-danger" href="{% url 'finance:delete' transaction.id %}">
+                                                            <i class="bi bi-trash me-2"></i> Excluir
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            Nenhuma transação cadastrada.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
+            {% include "partials/_pagination.html" %}
+        </div>
+    </div>
+</div>
 {% endblock content %}

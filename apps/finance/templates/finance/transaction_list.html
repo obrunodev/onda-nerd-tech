@@ -1,0 +1,24 @@
+{% extends "_base.html" %}
+
+{% block title %}Transações{% endblock title %}
+
+{% block content %}
+
+    <h1>Lista de transações</h1>
+
+    <a href="{% url "finance:create" %}">Nova transação</a>
+
+    <ul>
+        {% for transaction in transactions %}
+            <li>
+                {{ transaction }}
+                {% if transaction.due_date %}
+                    - Vence em: {{ transaction.due_date }}
+                {% endif %}
+                - <a href="{% url "finance:update" transaction.id %}">Editar</a>
+                - <a href="{% url "finance:delete" transaction.id %}">Excluir</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}

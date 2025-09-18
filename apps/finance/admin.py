@@ -1,3 +1,8 @@
+from apps.finance.models import Transaction
+
 from django.contrib import admin
 
-# Register your models here.
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    ...

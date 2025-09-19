@@ -3,8 +3,6 @@ from apps.finance.forms import TransactionForm
 
 from apps.shared.utils import dates_contants
 
-from datetime import timedelta
-
 from dateutil.relativedelta import relativedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -68,26 +66,11 @@ class TransactionListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        month_param = None
-        year_param = None
-        params = self.request.GET
-        if filter_month := params.get('month'):
-            month_param = filter_month
-        if filter_year := params.get('year'):
-            year_param = filter_year
-        qs = super().get_queryset()
-        if month_param:
-            qs = qs.filter(due_date__month=month_param)
-        if year_param:
-            qs = qs.filter(due_date__year=year_param)
-        if q := params.get('q'):
-            qs = qs.filter(title__icontains=q)
-        if date := params.get('date'):
-            qs = qs.filter(due_date=date)
-        return qs
+        return Transaction.services.filter_transactions(super().get_queryset(), self.request.GET)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['days'] = range(1, 32)
         context['years'] = dates_contants.YEARS
         context['months'] = dates_contants.MONTHS_MAPPING
         context = context | Transaction.services.get_transaction_context(qs=self.get_queryset())

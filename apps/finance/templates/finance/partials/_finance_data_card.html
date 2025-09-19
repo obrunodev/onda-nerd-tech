@@ -1,0 +1,35 @@
+<div class="mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <div class="fw-semibold">Balanço</div>
+                    <span class="badge fs-6 px-3 py-2 {% if balance >= 0 %}bg-primary{% else %}bg-danger{% endif %}">
+                        R$ {{ balance }}
+                    </span>
+                </div>
+
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <div class="fw-semibold">Entradas</div>
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        R$ {{ total_in }}
+                    </span>
+                </div>
+
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <div class="fw-semibold">Saídas</div>
+                    <span class="badge bg-danger fs-6 px-3 py-2">
+                        R$ {{ total_out }}
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="fw-semibold">Saídas pendentes</div>
+                    <span class="badge bg-warning fs-6 px-3 py-2">
+                        R$ {{ total_pending }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

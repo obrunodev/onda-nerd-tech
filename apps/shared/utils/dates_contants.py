@@ -7,4 +7,4 @@ MONTHS_MAPPING = {
 }
 
 actual_year = datetime.today().year
-YEARS = [year for year in range(actual_year - 10, actual_year + 50)]
+YEARS = range(actual_year - 10, actual_year + 50)

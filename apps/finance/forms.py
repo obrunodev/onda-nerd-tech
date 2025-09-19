@@ -4,6 +4,14 @@ from django import forms
 
 
 class TransactionForm(forms.ModelForm):
+    installments_quantity = forms.IntegerField(
+        label='Número de Parcelas',
+        min_value=1,
+        initial=1,
+        required=False,
+        help_text='Deixe 1 para uma transação única.',
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model = Transaction

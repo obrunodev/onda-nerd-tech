@@ -3,10 +3,9 @@ from apps.finance.forms import TransactionForm
 
 from apps.shared.utils import dates_contants
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
@@ -17,6 +16,48 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
     form_class = TransactionForm
     success_url = reverse_lazy('finance:list')
+
+    def form_valid(self, form):
+        installments_quantity = form.cleaned_data.get('installments_quantity', 1)
+        original_title = form.cleaned_data['title']
+        original_value = form.cleaned_data['value']
+        original_due_date = form.cleaned_data['due_date']
+
+        transactions_to_create = []
+
+        if installments_quantity <= 1:
+            transaction = form.save(commit=False)
+            transactions_to_create.append(transaction)
+
+        else:
+            installment_value = original_value / installments_quantity
+
+            parent_transaction = form.save(commit=False)
+            parent_transaction.title = f'{original_title} (1/{installments_quantity})'
+            parent_transaction.is_installment = True
+            parent_transaction.installment_number = 1
+            parent_transaction.value = installment_value
+            parent_transaction.save()
+
+            # Cria as demais parcelas
+            for i in range(2, installments_quantity + 1):
+                new_due_date = original_due_date + timedelta(days=30 * (i - 1))
+
+                installment = Transaction(
+                    title=f'{original_title} ({i}/{installments_quantity})',
+                    value=installment_value,
+                    due_date=new_due_date,
+                    transaction_type=form.cleaned_data['transaction_type'],
+                    is_paid=False,
+                    is_installment=True,
+                    installment_number=i,
+                    parent_transaction=parent_transaction
+                )
+                transactions_to_create.append(installment)
+
+            Transaction.objects.bulk_create(transactions_to_create)
+
+        return super().form_valid(form)
 
 
 class TransactionListView(LoginRequiredMixin, ListView):

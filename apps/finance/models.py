@@ -21,6 +21,16 @@ class Transaction(BaseModel):
                                         max_length=10,
                                         choices=TransactionTypeChoices.choices,
                                         default=TransactionTypeChoices.IN)
+    is_installment = models.BooleanField('É parcela?', default=False)
+    installment_number = models.PositiveIntegerField('Número da Parcela', null=True, blank=True)
+    parent_transaction = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='installments',
+        verbose_name='Transação Principal'
+    )
 
     objects = models.Manager()
     services = TransactionManager()

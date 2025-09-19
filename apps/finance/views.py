@@ -22,6 +22,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     context_object_name = 'transactions'
+    paginate_by = 25
 
     def get_queryset(self):
         today = datetime.today()
@@ -70,6 +71,10 @@ class TransactionListView(LoginRequiredMixin, ListView):
             )['total'] or 0, 2
         )
         context['balance'] = context['total_in'] - context['total_out']
+        query_params = self.request.GET.copy()
+        if "page" in query_params:
+            query_params.pop("page")
+        context["querystring"] = query_params.urlencode()
         return context
 
 

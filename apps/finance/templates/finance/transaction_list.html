@@ -99,6 +99,7 @@
                                     <th>Vencimento</th>
                                     <th>Pagamento</th>
                                     <th>Status</th>
+                                    <th>Tipo</th>
                                     <th class="text-end">Ações</th>
                                 </tr>
                             </thead>
@@ -126,6 +127,13 @@
                                                 <span class="badge bg-success">Pago</span>
                                             {% else %}
                                                 <span class="badge bg-warning text-dark">Pendente</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if transaction.transaction_type == 'income' %}
+                                                <span class="badge bg-success">Entrada</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Saída</span>
                                             {% endif %}
                                         </td>
                                         <td class="text-end">

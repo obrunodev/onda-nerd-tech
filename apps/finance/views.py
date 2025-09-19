@@ -63,21 +63,22 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     context_object_name = 'transactions'
-    paginate_by = 25
+    paginate_by = 10
 
     def get_queryset(self):
         today = datetime.today()
-        month_param = today.month
-        year_param = today.year
+        month_param = None
+        year_param = None
         params = self.request.GET
         if filter_month := params.get('month'):
             month_param = filter_month
         if filter_year := params.get('year'):
             year_param = filter_year
-        qs = super().get_queryset().filter(
-            due_date__month=month_param,
-            due_date__year=year_param,
-        )
+        qs = super().get_queryset()
+        if month_param:
+            qs = qs.filter(due_date__month=month_param)
+        if year_param:
+            qs = qs.filter(due_date__year=year_param)
         if q := params.get('q'):
             qs = qs.filter(title__icontains=q)
         if date := params.get('date'):

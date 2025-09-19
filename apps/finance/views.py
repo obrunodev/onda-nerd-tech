@@ -3,7 +3,9 @@ from apps.finance.forms import TransactionForm
 
 from apps.shared.utils import dates_contants
 
-from datetime import datetime, timedelta
+from datetime import timedelta
+
+from dateutil.relativedelta import relativedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -41,7 +43,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 
             # Cria as demais parcelas
             for i in range(2, installments_quantity + 1):
-                new_due_date = original_due_date + timedelta(days=30 * (i - 1))
+                new_due_date = original_due_date + relativedelta(months=i - 1)
 
                 installment = Transaction(
                     title=f'{original_title} ({i}/{installments_quantity})',
@@ -66,7 +68,6 @@ class TransactionListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        today = datetime.today()
         month_param = None
         year_param = None
         params = self.request.GET

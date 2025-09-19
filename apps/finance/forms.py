@@ -15,10 +15,11 @@ class TransactionForm(forms.ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['title', 'value', 'due_date', 'transaction_type']
+        fields = ['title', 'value', 'due_date', 'transaction_type', 'payment_date']
         widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
             "value": forms.NumberInput(attrs={"class": "form-control"}),
             "transaction_type": forms.Select(attrs={"class": "form-select"}),
             "due_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "payment_date": forms.DateTimeInput(attrs={"class": "form-control", "type": "date"}),
         }

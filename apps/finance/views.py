@@ -45,32 +45,9 @@ class TransactionListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        qs = self.get_queryset()
         context['years'] = dates_contants.YEARS
         context['months'] = dates_contants.MONTHS_MAPPING
-        context['total_in'] = round(
-            qs.filter(
-                transaction_type=Transaction.TransactionTypeChoices.IN,
-            ).aggregate(
-                total=Sum('value')
-            )['total'] or 0, 2
-        )
-        context['total_out'] = round(
-            qs.filter(
-                transaction_type=Transaction.TransactionTypeChoices.OUT,
-            ).aggregate(
-                total=Sum('value')
-            )['total'] or 0, 2
-        )
-        context['total_pending'] = round(
-            qs.filter(
-                transaction_type=Transaction.TransactionTypeChoices.OUT,
-                is_paid=False,
-            ).aggregate(
-                total=Sum('value')
-            )['total'] or 0, 2
-        )
-        context['balance'] = context['total_in'] - context['total_out']
+        context = context | Transaction.services.get_transaction_context(qs=self.get_queryset())
         query_params = self.request.GET.copy()
         if "page" in query_params:
             query_params.pop("page")

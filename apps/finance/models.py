@@ -1,3 +1,4 @@
+from apps.finance.managers import TransactionManager
 from apps.shared.models import BaseModel
 
 from datetime import datetime
@@ -20,6 +21,9 @@ class Transaction(BaseModel):
                                         max_length=10,
                                         choices=TransactionTypeChoices.choices,
                                         default=TransactionTypeChoices.IN)
+
+    objects = models.Manager()
+    services = TransactionManager()
 
     class Meta:
         ordering = ['due_date']

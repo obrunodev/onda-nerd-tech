@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
+from django.db.models.functions import ExtractYear, ExtractDay
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
@@ -69,9 +70,16 @@ class TransactionListView(LoginRequiredMixin, ListView):
         return Transaction.services.filter_transactions(super().get_queryset(), self.request.GET)
 
     def get_context_data(self, **kwargs):
+        years_with_transactions = Transaction.objects.annotate(
+            year=ExtractYear('due_date')
+        ).values_list('year', flat=True).distinct().order_by('year')
+        days_with_transactions = Transaction.objects.annotate(
+            day=ExtractDay('due_date')
+        ).values_list('day', flat=True).distinct().order_by('day')
+
         context = super().get_context_data(**kwargs)
-        context['days'] = range(1, 32)
-        context['years'] = dates_contants.YEARS
+        context['years'] = years_with_transactions
+        context['days'] = days_with_transactions
         context['months'] = dates_contants.MONTHS_MAPPING
         context = context | Transaction.services.get_transaction_context(qs=self.get_queryset())
         query_params = self.request.GET.copy()

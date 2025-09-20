@@ -5,9 +5,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
-DEBUG = True
-ALLOWED_HOSTS = ['ilyhze.hospedagemelastica.com.br']
-CSRF_TRUSTED_ORIGINS = ['https://ilyhze.hospedagemelastica.com.br']
+DEBUG = True if config('ENV', 'prod') == 'dev' else False
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ilyhze.hospedagemelastica.com.br']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://ilyhze.hospedagemelastica.com.br']
 
 INSTALLED_APPS = [
     'apps.accounts',
@@ -22,6 +22,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,3 +89,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'finance:list'
 LOGOUT_REDIRECT_URL = 'accounts:login'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -96,52 +96,39 @@
                                     <span class="badge bg-danger">Saída</span>
                                 {% endif %}
                             </td>
-                            <td class="text-end">
-                                <div class="dropdown position-static">
-                                    <button class="btn btn-sm"
-                                            type="button"
-                                            id="dropdownMenu{{ transaction.id }}"
-                                            data-bs-toggle="dropdown"
-                                            data-bs-display="static"
-                                            aria-expanded="false">
+                            <td class="text-end dropdown">  
+                                <button class="btn btn-sm"
+                                        type="button"
+                                        id="dropdownMenu{{ transaction.id }}"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
                                         <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ transaction.id }}">
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'finance:update' transaction.id %}">
-                                                <i class="bi bi-pencil-square me-2"></i> Editar
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger" href="{% url 'finance:delete' transaction.id %}">
-                                                <i class="bi bi-trash me-2"></i> Excluir
-                                            </a>
-                                        </li>
-                                        {% if transaction.transaction_type == 'outcome' %}
-                                            <li>
-                                                <form action="{% url "finance:toggle_status" transaction.pk %}" method="post">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="dropdown-item">
-                                                        <i class="bi bi-trash me-2"></i>
-                                                        Alterar para
-                                                        {% if transaction.is_paid == False %}
-                                                            Pago
-                                                        {% else %}
-                                                            Pendente
-                                                        {% endif %}
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                </div>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ transaction.id }}">
+                                    <li><a class="dropdown-item" href="{% url 'finance:update' transaction.id %}"><i class="bi bi-pencil-square me-2"></i> Editar</a></li>
+                                    <li><a class="dropdown-item text-danger" href="{% url 'finance:delete' transaction.id %}"><i class="bi bi-trash me-2"></i> Excluir</a></li>
+                                    {% if transaction.transaction_type == 'outcome' %}
+                                    <li>
+                                        <form action="{% url "finance:toggle_status" transaction.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-trash me-2"></i>
+                                                Alterar para
+                                                {% if transaction.is_paid == False %}
+                                                    Pago
+                                                {% else %}
+                                                    Pendente
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                    {% endif %}
+                                </ul>
                             </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                Nenhuma transação encontrada.
-                            </td>
+                            <td colspan="6" class="text-center py-4 text-muted">Nenhuma transação encontrada.</td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -6,7 +6,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ilyhze.hospedagemelastica.com.br']
+CSRF_TRUSTED_ORIGINS = ['https://ilyhze.hospedagemelastica.com.br']
 
 INSTALLED_APPS = [
     'apps.accounts',

@@ -1,3 +1,4 @@
+from django.forms import BaseModelForm
 from apps.finance.models import Transaction
 from apps.finance.forms import TransactionForm
 
@@ -40,7 +41,6 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
             parent_transaction.value = installment_value
             parent_transaction.save()
 
-            # Cria as demais parcelas
             for i in range(2, installments_quantity + 1):
                 new_due_date = original_due_date + relativedelta(months=i - 1)
 
@@ -93,6 +93,19 @@ class TransactionUpdateView(LoginRequiredMixin, UpdateView):
     model = Transaction
     form_class = TransactionForm
     success_url = reverse_lazy('finance:list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+
+        instance = self.get_object()
+
+        if instance.due_date:
+            initial['due_date'] = instance.due_date.strftime('%Y-%m-%d')
+
+        if instance.payment_date:
+            initial['payment_date'] = instance.payment_date.strftime('%Y-%m-%dT%H:%M')
+
+        return initial
 
 
 class TransactionDeleteView(LoginRequiredMixin, DeleteView):
